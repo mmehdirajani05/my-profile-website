@@ -17,9 +17,9 @@ export function ProjectCard({ project, onOpen }: ProjectCardProps) {
     <button
       type="button"
       onClick={() => onOpen(project)}
-      className="group relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] text-left shadow-2xl shadow-black/20 transition duration-300 hover:-translate-y-1 hover:border-blue-400/60"
+      className="group relative overflow-hidden rounded-[2rem] border border-black/10 bg-white text-left shadow-xl shadow-black/[0.06] transition duration-300 hover:-translate-y-1 hover:border-[#1a6eff]/50 hover:shadow-2xl hover:shadow-black/[0.08]"
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-slate-900">
+      <div className="relative aspect-[4/3] overflow-hidden bg-slate-200">
         {preview ? (
           isVideoUrl(preview) ? (
             <>
@@ -29,7 +29,7 @@ export function ProjectCard({ project, onOpen }: ProjectCardProps) {
                 loop
                 playsInline
                 preload="metadata"
-                className="h-full w-full object-cover opacity-80 transition duration-500 group-hover:scale-105"
+                className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
               />
               <span className="absolute left-5 top-5 grid size-11 place-items-center rounded-full bg-black/50 text-white backdrop-blur">
                 <Play size={17} fill="currentColor" />
@@ -41,7 +41,7 @@ export function ProjectCard({ project, onOpen }: ProjectCardProps) {
               alt={project.title}
               fill
               sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-cover opacity-85 transition duration-500 group-hover:scale-105"
+              className="object-cover transition duration-500 group-hover:scale-105"
             />
           )
         ) : (
@@ -49,11 +49,11 @@ export function ProjectCard({ project, onOpen }: ProjectCardProps) {
             <ImageIcon size={40} />
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/15 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/88 via-slate-950/10 to-transparent" />
       </div>
 
       <div className="absolute inset-x-0 bottom-0 p-6">
-        <div className="mb-3 inline-flex rounded-full border border-blue-300/30 bg-blue-400/10 px-3 py-1 text-xs font-semibold text-blue-100">
+        <div className="mb-3 inline-flex rounded-full border border-white/25 bg-white/90 px-3 py-1 text-xs font-semibold text-[#1a6eff] shadow-sm">
           {project.category}
         </div>
         <div className="flex items-end justify-between gap-4">
@@ -62,10 +62,10 @@ export function ProjectCard({ project, onOpen }: ProjectCardProps) {
               {project.title}
             </h3>
             <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-300">
-              {project.description}
+              {project.summary ?? project.description}
             </p>
           </div>
-          <span className="grid size-11 shrink-0 place-items-center rounded-full bg-white text-slate-950 transition group-hover:bg-blue-300">
+          <span className="grid size-11 shrink-0 place-items-center rounded-full bg-white text-slate-950 transition group-hover:bg-[#1a6eff] group-hover:text-white">
             <ArrowUpRight size={18} />
           </span>
         </div>

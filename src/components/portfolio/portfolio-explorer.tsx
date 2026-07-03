@@ -4,46 +4,41 @@ import Link from "next/link";
 import { ExternalLink, X } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import {
-  PROJECT_CATEGORIES,
-  type Project,
-  type ProjectCategory,
-} from "@/lib/projects";
+import { projectCategoriesFromProjects, type Project } from "@/lib/projects";
 import { ProjectCard } from "@/components/portfolio/project-card";
 import { MediaSlider } from "@/components/ui/media-slider";
 
-type Filter = "All" | ProjectCategory;
-
-const filters: Filter[] = ["All", ...PROJECT_CATEGORIES];
+type Filter = "all" | string;
 
 export function PortfolioExplorer({ projects }: { projects: Project[] }) {
-  const [filter, setFilter] = useState<Filter>("All");
+  const [filter, setFilter] = useState<Filter>("all");
   const [selected, setSelected] = useState<Project | null>(null);
+  const categories = useMemo(() => projectCategoriesFromProjects(projects), [projects]);
 
   const filteredProjects = useMemo(() => {
-    if (filter === "All") {
+    if (filter === "all") {
       return projects;
     }
 
-    return projects.filter((project) => project.category === filter);
+    return projects.filter((project) => project.category_slug === filter);
   }, [filter, projects]);
 
   return (
     <>
-      <div className="sticky top-16 z-30 -mx-5 border-y border-white/10 bg-slate-950/80 px-5 py-4 backdrop-blur-xl sm:-mx-8 sm:px-8">
+      <div className="sticky top-16 z-30 -mx-5 border-y border-black/10 bg-[#f2f0ed]/85 px-5 py-4 backdrop-blur-xl sm:-mx-8 sm:px-8">
         <div className="mx-auto flex max-w-7xl gap-2 overflow-x-auto">
-          {filters.map((item) => (
+          {[{ slug: "all", name: "All" }, ...categories].map((item) => (
             <button
-              key={item}
+              key={item.slug}
               type="button"
-              onClick={() => setFilter(item)}
-              className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${
-                filter === item
-                  ? "bg-white text-slate-950"
-                  : "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white"
+              onClick={() => setFilter(item.slug)}
+              className={`shrink-0 rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                filter === item.slug
+                  ? "border-[#1a6eff] bg-[#1a6eff] text-white"
+                  : "border-black/10 bg-white/70 text-slate-700 hover:border-[#1a6eff]/40 hover:text-[#1a6eff]"
               }`}
             >
-              {item}
+              {item.name}
             </button>
           ))}
         </div>
@@ -61,9 +56,9 @@ export function PortfolioExplorer({ projects }: { projects: Project[] }) {
           ))}
         </div>
       ) : (
-        <div className="rounded-[2rem] border border-dashed border-white/15 bg-white/[0.03] px-8 py-16 text-center">
-          <p className="text-lg font-semibold text-white">No projects yet.</p>
-          <p className="mt-2 text-slate-400">
+        <div className="rounded-[2rem] border border-dashed border-black/15 bg-white/60 px-8 py-16 text-center">
+          <p className="text-lg font-semibold text-slate-950">No projects yet.</p>
+          <p className="mt-2 text-slate-600">
             Add portfolio work from the admin dashboard and it will appear here.
           </p>
         </div>
@@ -74,15 +69,15 @@ export function PortfolioExplorer({ projects }: { projects: Project[] }) {
           role="dialog"
           aria-modal="true"
           aria-label={selected.title}
-          className="fixed inset-0 z-[70] overflow-y-auto bg-slate-950/90 px-5 py-6 backdrop-blur-xl sm:px-8"
+          className="fixed inset-0 z-[70] overflow-y-auto bg-slate-950/55 px-5 py-6 backdrop-blur-xl sm:px-8"
         >
-          <div className="mx-auto max-w-5xl rounded-[2rem] border border-white/10 bg-slate-900 p-4 shadow-2xl shadow-black/60 sm:p-6">
+          <div className="mx-auto max-w-5xl rounded-[2rem] border border-black/10 bg-[#f8f6f2] p-4 shadow-2xl shadow-black/30 sm:p-6">
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-300">
+                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-[#1a6eff]">
                   {selected.category}
                 </p>
-                <h2 className="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                <h2 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
                   {selected.title}
                 </h2>
               </div>
@@ -90,7 +85,7 @@ export function PortfolioExplorer({ projects }: { projects: Project[] }) {
                 type="button"
                 aria-label="Close project"
                 onClick={() => setSelected(null)}
-                className="grid size-11 shrink-0 place-items-center rounded-full bg-white/10 text-white transition hover:bg-white/20"
+                className="grid size-11 shrink-0 place-items-center rounded-full bg-slate-950 text-white transition hover:bg-[#1a6eff]"
               >
                 <X size={18} />
               </button>
@@ -99,7 +94,7 @@ export function PortfolioExplorer({ projects }: { projects: Project[] }) {
             <MediaSlider urls={selected.media_urls} title={selected.title} />
 
             <div className="mt-6 grid gap-6 md:grid-cols-[1fr_auto] md:items-start">
-              <p className="text-base leading-8 text-slate-300">
+              <p className="text-base leading-8 text-slate-700">
                 {selected.description}
               </p>
               {selected.project_url ? (
@@ -107,7 +102,7 @@ export function PortfolioExplorer({ projects }: { projects: Project[] }) {
                   href={selected.project_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-blue-400 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-blue-300"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-[#1a6eff] px-5 py-3 text-sm font-bold text-white transition hover:bg-[#0f52cc]"
                 >
                   Visit project
                   <ExternalLink size={16} />

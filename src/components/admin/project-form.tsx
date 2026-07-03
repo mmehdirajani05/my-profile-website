@@ -1,4 +1,4 @@
-import { PROJECT_CATEGORIES, type Project } from "@/lib/projects";
+import type { Project, ProjectCategory } from "@/lib/projects";
 import {
   createProjectAction,
   updateProjectAction,
@@ -6,10 +6,12 @@ import {
 
 type ProjectFormProps = {
   project?: Project;
+  categories: ProjectCategory[];
 };
 
-export function ProjectForm({ project }: ProjectFormProps) {
+export function ProjectForm({ project, categories }: ProjectFormProps) {
   const action = project ? updateProjectAction : createProjectAction;
+  const defaultCategoryId = project?.category_id ?? categories[0]?.id;
 
   return (
     <form action={action} className="grid gap-4">
@@ -28,14 +30,14 @@ export function ProjectForm({ project }: ProjectFormProps) {
       <label className="grid gap-2">
         <span className="admin-label">Category</span>
         <select
-          name="category"
+          name="category_id"
           required
-          defaultValue={project?.category ?? PROJECT_CATEGORIES[0]}
+          defaultValue={defaultCategoryId}
           className="admin-input"
         >
-          {PROJECT_CATEGORIES.map((category) => (
-            <option key={category} value={category}>
-              {category}
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
             </option>
           ))}
         </select>

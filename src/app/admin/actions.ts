@@ -8,11 +8,7 @@ import {
   PROJECT_MEDIA_BUCKET,
   createSupabaseAdminClient,
 } from "@/lib/supabase/admin";
-import {
-  PROJECT_CATEGORIES,
-  isProjectCategory,
-  type ProjectInsert,
-} from "@/lib/projects";
+import { isVideoUrl, type ProjectInsert, type ProjectMediaInsert } from "@/lib/projects";
 
 async function requireAdmin() {
   if (!(await isAdminAuthenticated())) {
@@ -40,16 +36,6 @@ function optionalUrl(formData: FormData) {
   return value.trim();
 }
 
-function categoryFromForm(formData: FormData) {
-  const category = requiredString(formData, "category");
-
-  if (!isProjectCategory(category)) {
-    throw new Error(`Category must be one of: ${PROJECT_CATEGORIES.join(", ")}.`);
-  }
-
-  return category;
-}
-
 function existingMediaUrls(formData: FormData) {
   const value = formData.get("existing_media_urls");
 
@@ -69,7 +55,7 @@ async function uploadMedia(formData: FormData) {
     .getAll("media")
     .filter((value): value is File => value instanceof File && value.size > 0);
 
-  const urls: string[] = [];
+  const media: Omit<ProjectMediaInsert, "project_id" | "sort_order">[] = [];
 
   for (const file of files) {
     const extension = file.name.split(".").pop()?.toLowerCase() ?? "bin";
@@ -91,22 +77,41 @@ async function uploadMedia(formData: FormData) {
       .from(PROJECT_MEDIA_BUCKET)
       .getPublicUrl(path);
 
-    urls.push(data.publicUrl);
+    media.push({
+      media_type: file.type.startsWith("video/") ? "video" : "image",
+      path,
+      public_url: data.publicUrl,
+      alt_text: file.name,
+    });
   }
 
-  return urls;
+  return media;
 }
 
 async function projectPayload(formData: FormData): Promise<ProjectInsert> {
-  const uploadedUrls = await uploadMedia(formData);
-
   return {
     title: requiredString(formData, "title"),
     description: requiredString(formData, "description"),
-    category: categoryFromForm(formData),
+    summary: null,
+    category_id: requiredString(formData, "category_id"),
     project_url: optionalUrl(formData),
-    media_urls: [...existingMediaUrls(formData), ...uploadedUrls],
   };
+}
+
+async function mediaPayload(formData: FormData, projectId: string) {
+  const uploadedMedia = await uploadMedia(formData);
+  const existingMedia = existingMediaUrls(formData).map((url) => ({
+    media_type: isVideoUrl(url) ? ("video" as const) : ("image" as const),
+    path: url,
+    public_url: url,
+    alt_text: null,
+  }));
+
+  return [...existingMedia, ...uploadedMedia].map((item, index) => ({
+    ...item,
+    project_id: projectId,
+    sort_order: index,
+  }));
 }
 
 export async function loginAction(formData: FormData) {
@@ -130,10 +135,26 @@ export async function createProjectAction(formData: FormData) {
 
   const supabase = createSupabaseAdminClient();
   const payload = await projectPayload(formData);
-  const { error } = await supabase.from("projects").insert(payload);
+  const { data, error } = await supabase
+    .from("portfolio_projects")
+    .insert(payload)
+    .select("id")
+    .single();
 
   if (error) {
     throw new Error(error.message);
+  }
+
+  const media = await mediaPayload(formData, data.id);
+
+  if (media.length) {
+    const { error: mediaError } = await supabase
+      .from("portfolio_project_media")
+      .insert(media);
+
+    if (mediaError) {
+      throw new Error(mediaError.message);
+    }
   }
 
   revalidatePath("/portfolio");
@@ -147,10 +168,34 @@ export async function updateProjectAction(formData: FormData) {
   const id = requiredString(formData, "id");
   const supabase = createSupabaseAdminClient();
   const payload = await projectPayload(formData);
-  const { error } = await supabase.from("projects").update(payload).eq("id", id);
+  const { error } = await supabase
+    .from("portfolio_projects")
+    .update(payload)
+    .eq("id", id);
 
   if (error) {
     throw new Error(error.message);
+  }
+
+  const { error: deleteMediaError } = await supabase
+    .from("portfolio_project_media")
+    .delete()
+    .eq("project_id", id);
+
+  if (deleteMediaError) {
+    throw new Error(deleteMediaError.message);
+  }
+
+  const media = await mediaPayload(formData, id);
+
+  if (media.length) {
+    const { error: mediaError } = await supabase
+      .from("portfolio_project_media")
+      .insert(media);
+
+    if (mediaError) {
+      throw new Error(mediaError.message);
+    }
   }
 
   revalidatePath("/portfolio");
@@ -163,7 +208,10 @@ export async function deleteProjectAction(formData: FormData) {
 
   const id = requiredString(formData, "id");
   const supabase = createSupabaseAdminClient();
-  const { error } = await supabase.from("projects").delete().eq("id", id);
+  const { error } = await supabase
+    .from("portfolio_projects")
+    .delete()
+    .eq("id", id);
 
   if (error) {
     throw new Error(error.message);

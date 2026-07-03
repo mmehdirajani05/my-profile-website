@@ -6,7 +6,7 @@ import { logoutAction } from "@/app/admin/actions";
 import { ProjectForm } from "@/components/admin/project-form";
 import { ProjectList } from "@/components/admin/project-list";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
-import { getProjects } from "@/lib/supabase/server";
+import { getProjectCategories, getProjects } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard",
@@ -21,7 +21,10 @@ export default async function AdminPage() {
     redirect("/admin/login");
   }
 
-  const projects = await getProjects();
+  const [projects, categories] = await Promise.all([
+    getProjects(),
+    getProjectCategories(),
+  ]);
 
   return (
     <main className="min-h-screen bg-slate-950 px-5 py-10 text-white sm:px-8">
@@ -58,7 +61,7 @@ export default async function AdminPage() {
               images/videos for the slider.
             </p>
             <div className="mt-6">
-              <ProjectForm />
+              <ProjectForm categories={categories} />
             </div>
           </section>
 
@@ -69,7 +72,7 @@ export default async function AdminPage() {
                 {projects.length} total
               </span>
             </div>
-            <ProjectList projects={projects} />
+            <ProjectList projects={projects} categories={categories} />
           </section>
         </div>
       </div>

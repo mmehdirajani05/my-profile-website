@@ -31,7 +31,7 @@ supabase/schema.sql
 
 ## Setup
 
-1. Copy `.env.example` to `.env.local` and fill in Supabase values.
+1. Fill in Supabase values in `.env` (already gitignored).
 2. Run `supabase/schema.sql` in the Supabase SQL editor.
 3. Start the app:
 
@@ -47,7 +47,7 @@ npm run dev
 
 ## Supabase Notes
 
-Public visitors use the anon key to read `projects`. Admin mutations use the
+Public visitors use the anon key to read portfolio tables. Admin mutations use the
 server-only service role key through Server Actions. The default media bucket is
 `project-media`, configurable with `SUPABASE_PROJECT_MEDIA_BUCKET`.
 

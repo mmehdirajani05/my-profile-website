@@ -3,9 +3,15 @@ import { ExternalLink, Trash2 } from "lucide-react";
 
 import { deleteProjectAction } from "@/app/admin/actions";
 import { ProjectForm } from "@/components/admin/project-form";
-import type { Project } from "@/lib/projects";
+import type { Project, ProjectCategory } from "@/lib/projects";
 
-export function ProjectList({ projects }: { projects: Project[] }) {
+export function ProjectList({
+  projects,
+  categories,
+}: {
+  projects: Project[];
+  categories: ProjectCategory[];
+}) {
   if (!projects.length) {
     return (
       <div className="rounded-3xl border border-dashed border-white/15 bg-white/[0.03] p-8 text-center text-slate-400">
@@ -57,7 +63,7 @@ export function ProjectList({ projects }: { projects: Project[] }) {
             </div>
           </summary>
           <div className="mt-6 border-t border-white/10 pt-6">
-            <ProjectForm project={project} />
+            <ProjectForm project={project} categories={categories} />
           </div>
         </details>
       ))}

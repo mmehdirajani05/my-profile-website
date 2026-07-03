@@ -20,7 +20,7 @@ export function MediaSlider({ urls, title, className = "" }: MediaSliderProps) {
   if (!current) {
     return (
       <div
-        className={`grid aspect-video place-items-center rounded-3xl border border-white/10 bg-slate-900 text-slate-500 ${className}`}
+        className={`grid aspect-video place-items-center rounded-3xl border border-black/10 bg-white text-slate-400 ${className}`}
       >
         <ImageIcon size={36} />
       </div>
@@ -33,7 +33,7 @@ export function MediaSlider({ urls, title, className = "" }: MediaSliderProps) {
 
   return (
     <div className={className}>
-      <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-slate-950">
+      <div className="relative overflow-hidden rounded-3xl border border-black/10 bg-white">
         <div className="relative aspect-video">
           {isVideoUrl(current) ? (
             <video
@@ -89,8 +89,8 @@ export function MediaSlider({ urls, title, className = "" }: MediaSliderProps) {
               onClick={() => setActive(index)}
               className={`relative h-16 w-24 shrink-0 overflow-hidden rounded-xl border transition ${
                 active === index
-                  ? "border-blue-400"
-                  : "border-white/10 opacity-60 hover:opacity-100"
+                  ? "border-[#1a6eff]"
+                  : "border-black/10 opacity-60 hover:opacity-100"
               }`}
             >
               {isVideoUrl(url) ? (
