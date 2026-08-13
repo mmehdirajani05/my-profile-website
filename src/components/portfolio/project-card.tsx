@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { ArrowUpRight, ImageIcon, Play } from "lucide-react";
 
+import { HydrationSafeVideo } from "@/components/ui/hydration-safe-video";
 import { firstMediaUrl, isVideoUrl, type Project } from "@/lib/projects";
 
 type ProjectCardProps = {
@@ -23,13 +24,14 @@ export function ProjectCard({ project, onOpen }: ProjectCardProps) {
         {preview ? (
           isVideoUrl(preview) ? (
             <>
-              <video
+              <HydrationSafeVideo
                 src={preview}
                 muted
                 loop
                 playsInline
                 preload="metadata"
                 className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                placeholderClassName="h-full w-full"
               />
               <span className="absolute left-5 top-5 grid size-11 place-items-center rounded-full bg-black/50 text-white backdrop-blur">
                 <Play size={17} fill="currentColor" />
@@ -61,9 +63,9 @@ export function ProjectCard({ project, onOpen }: ProjectCardProps) {
             <h3 className="text-xl font-semibold tracking-tight text-white">
               {project.title}
             </h3>
-            <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-300">
+            <span className="mt-2 line-clamp-2 block text-sm leading-6 text-slate-300">
               {project.summary ?? project.description}
-            </p>
+            </span>
           </div>
           <span className="grid size-11 shrink-0 place-items-center rounded-full bg-white text-slate-950 transition group-hover:bg-[#1a6eff] group-hover:text-white">
             <ArrowUpRight size={18} />

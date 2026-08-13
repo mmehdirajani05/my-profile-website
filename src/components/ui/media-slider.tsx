@@ -4,6 +4,7 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, ImageIcon } from "lucide-react";
 import { useState } from "react";
 
+import { HydrationSafeVideo } from "@/components/ui/hydration-safe-video";
 import { isVideoUrl } from "@/lib/projects";
 
 type MediaSliderProps = {
@@ -36,9 +37,10 @@ export function MediaSlider({ urls, title, className = "" }: MediaSliderProps) {
       <div className="relative overflow-hidden rounded-3xl border border-black/10 bg-white">
         <div className="relative aspect-video">
           {isVideoUrl(current) ? (
-            <video
+            <HydrationSafeVideo
               key={current}
               className="h-full w-full object-cover"
+              placeholderClassName="h-full w-full"
               src={current}
               muted
               loop
@@ -94,12 +96,13 @@ export function MediaSlider({ urls, title, className = "" }: MediaSliderProps) {
               }`}
             >
               {isVideoUrl(url) ? (
-                <video
+                <HydrationSafeVideo
                   src={url}
                   muted
                   playsInline
                   preload="metadata"
                   className="h-full w-full object-cover"
+                  placeholderClassName="h-full w-full"
                 />
               ) : (
                 <Image

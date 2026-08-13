@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# portfolio media (videos/images) — copy to VPS manually, not via git
+/public/portfolio/
+/public/showcase/

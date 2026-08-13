@@ -2,60 +2,59 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-import { PortfolioExplorer } from "@/components/portfolio/portfolio-explorer";
-import { getProjects } from "@/lib/supabase/server";
+import { StaticPortfolio } from "@/components/portfolio/static-portfolio";
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const projects = await getProjects();
-
-  return {
-    title: "Portfolio Projects",
-    description: `Explore ${projects.length} selected JavaScript, React, Angular, Vue, Node.js, mobile app, Firebase, AI bot, and workflow automation projects by Muhammad Mehdi Rajani.`,
-    alternates: {
-      canonical: "/portfolio",
-    },
-    keywords: [
-      "Muhammad Mehdi Rajani portfolio",
-      "JavaScript projects",
-      "React projects",
-      "Angular projects",
-      "Vue projects",
-      "Node.js projects",
-      "Firebase projects",
-      "AI automation projects",
-      "Mobile app projects",
-      "Workflow automation portfolio",
+export const metadata: Metadata = {
+  title: "Portfolio Projects",
+  description:
+    "Selected work across AI automation, Angular/React/Vue web apps, mobile applications, and WordPress projects by Muhammad Mehdi Rajani.",
+  alternates: {
+    canonical: "/portfolio",
+  },
+  keywords: [
+    "Muhammad Mehdi Rajani portfolio",
+    "AI automation projects",
+    "Angular projects",
+    "React projects",
+    "Vue projects",
+    "Mobile app projects",
+    "WordPress projects",
+    "Workflow automation portfolio",
+  ],
+  openGraph: {
+    title: "Portfolio | Muhammad Mehdi Rajani",
+    description:
+      "Project showcase across AI automation, web frameworks, mobile apps, and WordPress.",
+    url: "/portfolio",
+    type: "website",
+    images: [
+      {
+        url: "/mehdi-portfolio-image.png",
+        width: 1024,
+        height: 526,
+        alt: "Portfolio projects by Muhammad Mehdi Rajani",
+      },
     ],
-    openGraph: {
-      title: "Portfolio | Muhammad Mehdi Rajani",
-      description:
-        "Selected project work across JavaScript, web apps, mobile apps, AI bots, Firebase, and automation workflows.",
-      url: "/portfolio",
-      type: "website",
-      images: [
-        {
-          url: "/mehdi-portfolio-image.png",
-          width: 1024,
-          height: 526,
-          alt: "Portfolio projects by Muhammad Mehdi Rajani",
-        },
-      ],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: "Portfolio | Muhammad Mehdi Rajani",
-      description:
-        "JavaScript, React, Angular, Vue, Node.js, Firebase, mobile app, AI bot, and workflow automation projects.",
-      images: ["/mehdi-portfolio-image.png"],
-    },
-  };
-}
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Portfolio | Muhammad Mehdi Rajani",
+    description:
+      "AI automation, Angular/React/Vue, mobile app, and WordPress project showcase.",
+    images: ["/mehdi-portfolio-image.png"],
+  },
+};
 
-export default async function PortfolioPage() {
-  const projects = await getProjects();
+const sectionNav = [
+  { id: "ai-automation", label: "AI Automation" },
+  { id: "web-frameworks", label: "Web Apps" },
+  { id: "mobile-apps", label: "Mobile" },
+  { id: "wordpress", label: "WordPress" },
+];
 
+export default function PortfolioPage() {
   return (
     <main className="min-h-screen overflow-hidden bg-[#f2f0ed] text-slate-950">
       <section className="relative px-5 py-20 sm:px-8 lg:py-28">
@@ -70,8 +69,9 @@ export default async function PortfolioPage() {
                 Work that looks sharp and runs clean.
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-                A dynamic project archive powered by Supabase, filtered by
-                category, and designed for rich image/video walkthroughs.
+                A curated showcase of AI automation, web apps, mobile products,
+                and WordPress builds — each section with sliding media
+                walkthroughs.
               </p>
             </div>
             <div className="rounded-[2rem] border border-black/10 bg-white/70 p-6 shadow-xl shadow-black/[0.04]">
@@ -90,9 +90,23 @@ export default async function PortfolioPage() {
         </div>
       </section>
 
-      <section className="px-5 pb-24 sm:px-8">
+      <section className="sticky top-16 z-30 border-y border-black/10 bg-[#f2f0ed]/85 px-5 py-4 backdrop-blur-xl sm:px-8">
+        <div className="mx-auto flex max-w-7xl gap-2 overflow-x-auto">
+          {sectionNav.map((item) => (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              className="shrink-0 rounded-full border border-black/10 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-[#1a6eff]/40 hover:text-[#1a6eff]"
+            >
+              {item.label}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <section className="px-5 pb-24 pt-16 sm:px-8 lg:pt-20">
         <div className="mx-auto max-w-7xl">
-          <PortfolioExplorer projects={projects} />
+          <StaticPortfolio />
         </div>
       </section>
     </main>
