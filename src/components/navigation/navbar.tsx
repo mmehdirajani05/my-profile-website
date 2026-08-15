@@ -72,7 +72,7 @@ export function Navbar() {
               <span className="nav-label">{item.label}</span>
             </Link>
           ))}
-          <Link href="mailto:mehdi.nedian@gmail.com" className="nav-cta">
+          <Link href="mailto:mehdi.devofficial@gmail.com" className="nav-cta">
             Get in touch
           </Link>
         </nav>

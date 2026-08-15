@@ -269,9 +269,9 @@ export function ResumePage() {
                 automation.
               </p>
               <div className="contact-row">
-                <a className="chip" href="mailto:mehdi.nedian@gmail.com">
+                <a className="chip" href="mailto:mehdi.devofficial@gmail.com">
                   <MailIcon />
-                  mehdi.nedian@gmail.com
+                  mehdi.devofficial@gmail.com
                 </a>
                 <a className="chip" href="tel:+923343450462">
                   <PhoneIcon />
@@ -506,7 +506,7 @@ export function ResumePage() {
               </p>
             </div>
             <div className="foot-actions">
-              <a className="btn-white" href="mailto:mehdi.nedian@gmail.com">
+              <a className="btn-white" href="mailto:mehdi.devofficial@gmail.com">
                 <MailIcon />
                 Email me
               </a>

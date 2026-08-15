@@ -33,7 +33,7 @@ const structuredData = {
       ],
       description:
         "Software engineer experienced in JavaScript, Angular, React, Vue, Node.js, Firebase, AI bots, workflow automations, and scalable web/mobile applications.",
-      email: "mailto:mehdi.nedian@gmail.com",
+      email: "mailto:mehdi.devofficial@gmail.com",
       telephone: "+923343450462",
       address: {
         "@type": "PostalAddress",
