@@ -267,25 +267,7 @@ export const PORTFOLIO_SECTIONS: PortfolioSection[] = [
             label: "About page",
           },
         ]),
-      },
-      {
-        id: "wp-textured-lab",
-        title: "Textured Lab",
-        summary:
-          "Animation and design studio site with service pages, project galleries, and lead capture.",
-        projectUrl: "https://texturedlab.com/",
-        fullPageCaptures: true,
-        slides: imageSlides("wp-textured-lab", [
-          {
-            src: "/portfolio/wordpress/texturedlab-home.png",
-            label: "Homepage",
-          },
-          {
-            src: "/portfolio/wordpress/texturedlab-about.png",
-            label: "About page",
-          },
-        ]),
-      },
+      }
     ],
   },
 ];
